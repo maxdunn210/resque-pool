@@ -6,3 +6,5 @@ pkg/*
 tmp/*
 vendor
 tags
+.idea/*
+.rvmrc
