@@ -9,6 +9,21 @@ Resque pool is a simple library for managing a pool of
 manages your workers for you, starting up the appropriate number of workers for
 each worker type.
 
+MD Jun-2013 Changes
+-------------------
+
+There was a problem where the workers would not start after a HUP signal but keep flapping.
+The reason was that Redis was not reconnected on the newly forked workers.
+Added a "Redis.reconnect" to pool.rb to solve this problem.
+
+Also did some other minor changes:
+
+* Changed the "ps" command in the children_of method to use
+"command" instead of "cmd" so that it would work on Mac and most Linux distributions.
+* Updated the gems to the latest version
+* Added debugger support
+* Updated .gitignore to ignore RubyMine and RVM config files
+
 Benefits
 ---------
 

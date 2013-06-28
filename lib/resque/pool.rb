@@ -357,6 +357,7 @@ module Resque
         log_worker "Starting worker #{worker}"
         call_after_prefork!
         reset_sig_handlers!
+        worker.reconnect # MD Jun-2013 Need to reconnect to Redis after forking a worker
         #self_pipe.each {|io| io.close }
         worker.work(ENV['INTERVAL'] || DEFAULT_WORKER_INTERVAL) # interval, will block
       end
