@@ -19,7 +19,7 @@ Added a "Redis.reconnect" to pool.rb to solve this problem.
 Also did some other minor changes:
 
 * Changed the "ps" command in the children_of method to use
-"command" instead of "cmd" so that it would work on Mac and most Linux distributions.
+"command" instead of "cmd" so that the Cucumber tests would work on Mac and most Linux distributions
 * Updated the gems to the latest version
 * Added debugger support
 * Updated .gitignore to ignore RubyMine and RVM config files
