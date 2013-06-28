@@ -66,3 +66,32 @@ Feature: Basic resque-pool daemon configuration and operation
     And the pool manager should log that a "bar" worker has been reaped
     And the pool manager should log that a "baz,quux" worker has been reaped
     And the pool manager should log that it is finished
+
+  Scenario: HUP
+    Given a directory named "log"
+    And a directory named "tmp/pids"
+    And a file named "config/resque-pool.yml" with:
+    """
+    foo: 2
+    bar: 4
+    "baz,quux": 4
+    """
+    When I run the pool manager as "resque-pool -d"
+    Then the pool manager should record its pid in "tmp/pids/resque-pool.pid"
+    And the pool manager should daemonize
+    And a file named "log/resque-pool.stdout.log" should exist
+    And a file named "log/resque-pool.stderr.log" should exist
+    And the pool manager should log that it has started up
+    And the pool manager should log that 10 workers are in the pool
+    And the pool manager should have 2 "foo" worker child processes
+    And the pool manager should have 4 "bar" worker child processes
+    And the pool manager should have 4 "baz,quux" worker child processes
+    When I send the pool manager the "HUP" signal
+    Then the resque workers should all shutdown
+    And the pool manager should log that 10 workers are in the pool
+    And the pool manager should have 2 "foo" worker child processes
+    And the pool manager should have 4 "bar" worker child processes
+    And the pool manager should have 4 "baz,quux" worker child processes
+    Then I send the pool manager the "QUIT" signal
+    And the pool manager daemon should finish
+

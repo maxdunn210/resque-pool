@@ -49,7 +49,7 @@ rescue NotFinishedStarting
 end
 
 def children_of(ppid)
-  ps = `ps -eo ppid,pid,cmd | grep '^ *#{ppid} '`
+  ps = `ps -eo ppid,pid,command | grep '^ *#{ppid} '`
   ps.split(/\s*\n/).map do |line|
     _, pid, cmd = line.strip.split(/\s+/, 3)
     [pid, cmd]
@@ -68,6 +68,12 @@ When /^I send the pool manager the "([^"]*)" signal$/ do |signal|
     keep_trying do
       step "the #{output_logfiles} should contain the following lines (with interpolated $PID):", <<-EOF
 resque-pool-manager[aruba][$PID]: QUIT: graceful shutdown, waiting for children
+      EOF
+    end
+  when "HUP"
+    keep_trying do
+      step "the #{output_logfiles} should contain the following lines (with interpolated $PID):", <<-EOF
+resque-pool-manager[aruba][$PID]: HUP: gracefully shutdown old children (which have old logfiles open)
       EOF
     end
   else
@@ -152,4 +158,4 @@ end
 Then /^the logfiles should match \/([^\/]*)\/$/ do |partial_output|
   output_or_log("log").should =~ /#{partial_output}/
 end
- 
+
